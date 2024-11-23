@@ -1,17 +1,12 @@
 import requests
-import os
-import json
 import streamlit as st
 from datetime import datetime, timedelta
 import pytz
-from dotenv import load_dotenv
 
 def fetch_flight_data():
     """Fetch flight data from FlightAware AeroAPI""" 
-    # Load environment variables
-    load_dotenv()
-    api_key = os.getenv("FLIGHTAWARE_API_KEY")
-    
+    api_key = st.secrets["api"]["FLIGHTAWARE_API_KEY"]
+
     if not api_key:
         st.error("FlightAware API key not found. Please check your .env file.")
         return None, None
