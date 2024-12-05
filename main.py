@@ -1,9 +1,9 @@
 import streamlit as st
-import time
 from datetime import datetime
+import time
 import pytz
 from data_fetcher import fetch_flight_data
-from flight_processor import get_next_flights
+from flight_processor import get_next_flights, format_countdown
 from ui_components import display_next_flight, display_flight_tables
 
 def main():
@@ -24,17 +24,18 @@ def main():
     # Get current time in UTC
     now = datetime.now(pytz.UTC)
     
-    # Check if we need to fetch new data (every 30 seconds)
+    # Check if we need to fetch new data (every hour)
     if (st.session_state.last_fetch_time is None or 
         (now - st.session_state.last_fetch_time).total_seconds() >= 3600):
         
         # Fetch new data
         departures, arrivals = fetch_flight_data()
+        print("fetching data")
         if departures and arrivals:
             st.session_state.flight_data = (departures, arrivals)
             st.session_state.last_fetch_time = now
     
-    # Use the stored flight data
+    # Create placeholder for countdown displays
     if st.session_state.flight_data:
         departures, arrivals = st.session_state.flight_data
         next_departure, next_arrival = get_next_flights(departures, arrivals, now)
@@ -44,19 +45,26 @@ def main():
         
         with col1:
             st.markdown("### Next Departure")
-            display_next_flight(next_departure, "departure", now)
+            departure_update = display_next_flight(next_departure, "departure", now)
         
         with col2:
             st.markdown("### Next Arrival")
-            display_next_flight(next_arrival, "arrival", now)
+            arrival_update = display_next_flight(next_arrival, "arrival", now)
         
         # Display flight tables
         st.markdown("### Upcoming Flights")
         display_flight_tables(departures, arrivals)
-    
-    # Rerun every second to update the countdown
-    time.sleep(1)
-    st.rerun()
+        
+        # Update countdowns
+        if departure_update or arrival_update:
+            placeholder = st.empty()
+            while True:
+                if departure_update:
+                    departure_update()
+                if arrival_update:
+                    arrival_update()
+                time.sleep(1)
+                placeholder.empty()  # This triggers a silent refresh without full page reload
 
 if __name__ == "__main__":
     main()
