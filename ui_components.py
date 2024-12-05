@@ -1,9 +1,7 @@
 import streamlit as st
 from datetime import datetime
-import time
 from flight_processor import format_countdown, format_flight_info
 from data_fetcher import fetch_flight_data
-from flight_processor import get_next_flights
 
 def display_next_flight(flight, flight_type, now):
     """Display the next flight information with countdown"""

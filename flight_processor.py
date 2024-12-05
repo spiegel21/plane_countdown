@@ -1,5 +1,4 @@
 from datetime import datetime
-import pytz
 
 def get_next_flights(departures, arrivals, now):
     """Get the next departure and arrival"""

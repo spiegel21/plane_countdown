@@ -2,8 +2,8 @@ import requests
 import streamlit as st
 from datetime import datetime, timedelta
 import pytz
-from dotenv import load_dotenv
-import os
+# from dotenv import load_dotenv
+# import os
 
 def fetch_flight_data():
     """Fetch flight data from FlightAware AeroAPI""" 
