@@ -30,7 +30,6 @@ def main():
         
         # Fetch new data
         departures, arrivals = fetch_flight_data()
-        print("fetching data")
         if departures and arrivals:
             st.session_state.flight_data = (departures, arrivals)
             st.session_state.last_fetch_time = now

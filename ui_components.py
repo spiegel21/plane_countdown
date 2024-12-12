@@ -67,16 +67,16 @@ def display_flight_tables(departures, arrivals):
         if departures and "scheduled_departures" in departures:
             departure_data = []
             for flight in departures["scheduled_departures"][:10]:
-                if flight.get("estimated_off"):
+                if flight.get("estimated_off") > now:
                     estimated_time = datetime.fromisoformat(flight["estimated_off"].replace('Z', '+00:00')).astimezone()
-                    departure_data.append({
-                        "Flight": flight["ident_iata"],
-                        "Destination": flight["destination"]["city"],
-                        "Estimated Time": estimated_time.strftime('%Y-%m-%d %H:%M:%S %Z'),
-                        "Gate": flight["gate_origin"] or "N/A",
-                        "Status": flight["status"]
-                    })
-            departure_data = [flight for flight in departure_data if datetime.strptime(flight["Estimated Time"], '%Y-%m-%d %H:%M:%S %Z').astimezone() > now]
+                    if estimated_time > now:
+                        departure_data.append({
+                            "Flight": flight["ident_iata"],
+                            "Destination": flight["destination"]["city"],
+                            "Estimated Time": estimated_time.strftime('%Y-%m-%d %H:%M:%S'),
+                            "Gate": flight["gate_origin"] or "N/A",
+                            "Status": flight["status"]
+                        })
             departure_data.sort(key=lambda x: x["Estimated Time"])
             st.dataframe(departure_data, use_container_width=True)
         else:
@@ -88,14 +88,14 @@ def display_flight_tables(departures, arrivals):
             for flight in arrivals["scheduled_arrivals"][:10]:
                 if flight.get("estimated_on"):
                     estimated_time = datetime.fromisoformat(flight["estimated_on"].replace('Z', '+00:00')).astimezone()
-                    arrival_data.append({
-                        "Flight": flight["ident_iata"],
-                        "Origin": flight["origin"]["city"],
-                        "Estimated Time": estimated_time.strftime('%Y-%m-%d %H:%M:%S %Z'),
-                        "Gate": flight["gate_destination"] or "N/A",
-                        "Status": flight["status"]
-                    })
-            arrival_data = [flight for flight in arrival_data if datetime.strptime(flight["Estimated Time"], '%Y-%m-%d %H:%M:%S %Z').astimezone() > now]
+                    if estimated_time > now:
+                        arrival_data.append({
+                            "Flight": flight["ident_iata"],
+                            "Origin": flight["origin"]["city"],
+                            "Estimated Time": estimated_time.strftime('%Y-%m-%d %H:%M:%S'),
+                            "Gate": flight["gate_destination"] or "N/A",
+                            "Status": flight["status"]
+                        })
             arrival_data.sort(key=lambda x: x["Estimated Time"])
             st.dataframe(arrival_data, use_container_width=True)
         else:
