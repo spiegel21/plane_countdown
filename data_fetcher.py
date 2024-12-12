@@ -26,8 +26,8 @@ def fetch_flight_data():
     try:
         # Fetch arrivals
         arrivals_endpoint = f"/airports/{airport_code}/flights/scheduled_arrivals"
-        now_time = (datetime.now(pytz.UTC) - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S')
-        later_time = (datetime.now(pytz.UTC) + timedelta(hours=3)).strftime('%Y-%m-%dT%H:%M:%S')
+        now_time = (datetime.now(pytz.UTC)).strftime('%Y-%m-%dT%H:%M:%S')
+        later_time = (datetime.now(pytz.UTC) + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S')
         arrivals_response = requests.get(
             f"{base_url}{arrivals_endpoint}",
             headers=headers,
